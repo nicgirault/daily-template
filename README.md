@@ -22,3 +22,24 @@ Usage
   - Click on menu > add-on > daily scrum > daily mail and pick the corresponding draft in the list of drafts
   - Fill the number of points your PO has to validate
   - Preview the daily mail and send it!
+
+Daily template
+--------------
+
+In your Gmail draft template, you can use the following variables:
+ - {sprintNumber}
+ - {sprintGoal}
+ - {sprintDay}
+ - {date} (current date)
+ - {totalPoints}
+ - {donePoints}
+ - {toValidatePoints}
+ - {toStandardPoints}
+ - {earlyOrLate} ('Avance' ou 'Retard')
+ - {doneColorS} {doneColorE} (html span tag to have dynamic colors)
+ - {validationColorS} {validationColorE} (html span tag to have dynamic colors)
+ - IMG http://my-image.com IMG (to get a screenshot of the image at the correponding url)
+
+To send a daily mail you should edit your draft every morning without caring about repetitive work (copy the previous mail, update the subject, get the BDC, update the points).
+
+The most useful thing to me is the IMG tag that fetch a url and display the corresponding image. I use it to display a screenshot of the continuous integration badges and code quality badges.
