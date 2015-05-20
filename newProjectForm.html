@@ -1,0 +1,27 @@
+<div>
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <script>
+    function onSuccess(url){
+      document.getElementById('new-project-link').innerHTML = '<a target="_parent" href="'+url+'">Open new project spreadsheet</a>'
+    }
+    function onFailure(){
+      alert('Oups... Failed create new project...');
+    }
+    function newProject(formObject){
+      google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).newProject(formObject);
+    }
+  </script>
+  <form>
+    <div class="form-group">
+      <label for="projectName">Project name</label>
+      <input name="projectName" type="text" />
+      <span class="secondary">A new spreadsheet named <span class="error">BDC - {project name}</span> will be created</span>
+    </div>
+
+    <div style="margin-top: 20px;"></div>
+
+    <input type="button" class="action" value="Create Project Spreadhseet" onclick="newProject(this.parentNode)" />
+    <input type="button" value="Cancel" onclick="google.script.host.close()" />
+    <div id="new-project-link"></div>
+  </form>
+</div>

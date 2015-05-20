@@ -1,0 +1,22 @@
+<div>
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <script>
+    function onSuccess(){
+      google.script.host.close();
+    }
+    function onFailure(){
+      alert('Oups... Failed to send daily mail...');
+    }
+  </script>
+  <p><b>To:</b> <?= to ?></p>
+  <p><b>Cc:</b> <?= cc ?></p>
+  <p><b>Subject:</b> <?= subject ?></p>
+  <p><b>Body:</b> </p>
+  <?!= body ?>
+
+  <div style="margin-top: 40px;"></div>
+
+  <input type="button" class="action" value="Send"
+    onclick="google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).sendMail(<?= points ?>, <?= draftId ?>)" />
+  <input type="button" value="Cancel" onclick="google.script.host.close()" />
+</div>

@@ -1,10 +1,10 @@
-function sendMail(formObject){
-  var draft = GmailApp.getMessageById(formObject.draft);
+function sendMail(points, draftId){
+  var draft = GmailApp.getMessageById(draftId);
   var template = draft.getBody();
   var subjectTemplate = draft.getSubject();
-  var result = getContentFromTemplate(template, formObject.pointsToValidate);
+  var result = getContentFromTemplate(template, parseInt(points), false);
   var subject = buildSubject(subjectTemplate);
-  
+
   MailApp.sendEmail(draft.getTo(), subject, 'Impossible de lire le contenu', {
     cc: draft.getCc(),
     htmlBody: result[0],
@@ -12,10 +12,33 @@ function sendMail(formObject){
  });
 }
 
+
+function previewEmail(formObject){
+  var draft = GmailApp.getMessageById(formObject.draft);
+  var bodyTemplate = draft.getBody();
+  var subjectTemplate = draft.getSubject();
+  var body = getContentFromTemplate(bodyTemplate, formObject.pointsToValidate, true);
+  var subject = buildSubject(subjectTemplate);
+
+  var template = HtmlService.createTemplateFromFile('previewDaily');
+  template.to = draft.getTo();
+  template.cc = draft.getCc();
+  template.subject = subject;
+  template.body = body;
+  template.draftId = formObject.draft;
+  template.points = formObject.pointsToValidate;
+
+  var html = template.evaluate()
+    .setSandboxMode(HtmlService.SandboxMode.IFRAME)
+    .setWidth(800)
+    .setHeight(500);
+  SpreadsheetApp.getUi().showModalDialog(html, 'Preview daily mail');
+}
+
 function openDailyMailForm() {
   var template = HtmlService.createTemplateFromFile('dailyMailForm');
   var drafts = GmailApp.getDraftMessages();
-  
+
   filtered_drafts = [];
   for(var i=0;i<drafts.length;i++){
     if(drafts[i].getSubject() != ''){
@@ -25,6 +48,7 @@ function openDailyMailForm() {
   template.drafts = filtered_drafts;
   template.exampleSubject = getSubjectExample();
   template.exampleBody = getBodyExample();
+  template.emailQuotaRemaining = MailApp.getRemainingDailyQuota();
 
   var html = template.evaluate().setSandboxMode(HtmlService.SandboxMode.IFRAME);
   SpreadsheetApp.getUi().showModalDialog(html, 'Daily Mail');
@@ -47,7 +71,7 @@ function buildSubject(subject){
   return subject;
 }
 
-function getContentFromTemplate(template, toValidatePoints){
+function getContentFromTemplate(template, toValidatePoints, preview){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 
   var sprintNumber = ss.getRangeByName('sprintNumber').getValue();
@@ -64,7 +88,7 @@ function getContentFromTemplate(template, toValidatePoints){
       done = doneValues[i][0];
     }
   }
-  
+
   var donePoints = totalPoints - done;
   var toStandardPoints = standard - done;
   var earlyOrLate = '';
@@ -84,12 +108,11 @@ function getContentFromTemplate(template, toValidatePoints){
     earlyOrLate = 'Retard';
     doneColor = '#fb8072';
   }
-  
+
   var html = template
     .split('{sprintNumber}').join(''+sprintNumber)
     .split('{sprintGoal}').join(''+sprintGoal)
     .split('{totalPoints}').join(''+totalPoints)
-    .split('{bdc}').join('<img src="cid:bdc" />')
     .split('{donePoints}').join(''+donePoints)
     .split('{toValidatePoints}').join(''+toValidatePoints)
     .split('{toStandardPoints}').join(''+toStandardPoints)
@@ -99,29 +122,45 @@ function getContentFromTemplate(template, toValidatePoints){
     .split('{doneColorE}').join('</span>')
     .split('{validationColorS}').join('<span style="color: '+validationColor+'">')
     .split('{validationColorE}').join('</span>');
- 
+
+  if(preview) {
+    return getImages(html);
+  } else {
+    return fetchImages(html);
+  }
+}
+
+function fetchImages(template) {
+  template = template.split('{bdc}').join('<img src="cid:bdc" />')
   var inlineImages = {
     bdc: getBDC().getAs('image/png')
   };
-  Logger.log('9');
-  
-  Logger.log(html);
-  html = html.replace(/IMG.*?href="(.*?)".*?IMG/g, function(whole, url) {
-    Logger.log(whole);
+
+  var html = template.replace(/IMG.*?href="(.*?)".*?IMG/g, function(whole, url) {
     url = url.replace('&amp;', '&');
-    Logger.log(url);
     var response = UrlFetchApp.fetch(url);
     imgBlob = response.getAs('image/png');
-    
+
     var id = makeid();
     inlineImages[id] = imgBlob;
-    
+
     var balise = '<img src="cid:'+id+'">';
     return balise;
   });
 
-  Logger.log('10');
   return [html, inlineImages];
+}
+
+function getImages(template) {
+  var chart64 = Utilities.base64Encode(getBDC().getBlob().getBytes());
+  var html = template
+    .replace(/IMG.*?href="(.*?)".*?IMG/g, function(whole, url) {
+      url = url.replace('&amp;', '&');
+      var balise = '<img src="'+url+'">';
+      return balise;
+    })
+    .split('{bdc}').join('<img src="data:image/png;base64,'+chart64+'" />')
+  return html;
 }
 
 function getBDC(){
@@ -130,11 +169,11 @@ function getBDC(){
   .addColumn(Charts.ColumnType.STRING, "Sprint")
   .addColumn(Charts.ColumnType.NUMBER, "Standard")
   .addColumn(Charts.ColumnType.NUMBER, "Done");
-  
+
   var sprintDays = ss.getRangeByName('sprintDays').getValues();
   var standard = ss.getRangeByName('standard').getValues();
   var done = ss.getRangeByName('done').getValues();
-  
+
   for(var i=0; i<sprintDays.length;i++){
     d = done[i][0]
     if(d == ''){
@@ -143,7 +182,7 @@ function getBDC(){
     data.addRow([sprintDays[i][0], standard[i][0], d]);
   }
   data.build();
-  
+
   var chart = Charts.newLineChart()
      .setDataTable(data)
      .setLegendPosition(Charts.Position.NONE)

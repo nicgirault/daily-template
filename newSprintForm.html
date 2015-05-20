@@ -1,0 +1,32 @@
+<div>
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <form>
+    <div class="inline form-group" style="margin-bottom: 10px;">
+      <label for="sprintNumber">Sprint</label>
+      <input name="sprintNumber" type="number" style="width: 40px;" value="<?= defaultSprintNumber ?>" />
+    </div>
+
+    <div class="inline form-group" style="margin-bottom: 10px;">
+      <label for="startDate">Start date</label>
+      <input name="startDate"type="date" value="<?= defaultStartDate ?>" />
+    </div>
+
+    <div class="inline form-group" style="margin-bottom: 10px;">
+      <label for="endDate">End date</label>
+      <input name="endDate" type="date" value="<?= defaultEndDate ?>" />
+    </div>
+
+    <div class="form-group" style="margin-bottom: 10px;">
+      <label for="devTeam">Dev' team</label>
+      <input name="devTeam" type="text" value="<?= defaultTechTeam ?>" />
+    </div>
+
+    <div style="margin-top: 20px;"></div>
+
+    <input type="button" class="action" value="Create sprint sheet"
+    onclick="google.script.run
+    .createSprintSheet(this.parentNode);google.script.host.close()" />
+    <input type="button" value="Close" onclick="google.script.host.close()" />
+    <div class="secondary">A new sprint sheet will be created according to the content of this form</div>
+  </form>
+</div>
