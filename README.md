@@ -38,7 +38,7 @@ In your Gmail draft template, you can use the following variables:
  - {earlyOrLate} ('Avance' ou 'Retard')
  - {doneColorS} {doneColorE} (html span tag to have dynamic colors)
  - {validationColorS} {validationColorE} (html span tag to have dynamic colors)
- - IMG http://my-image.com IMG (to get a screenshot of the image at the correponding url)
+ - IMG https://scrutinizer-ci.com/g/theodo/backtest-api/badges/build.png IMG (to get a screenshot of the image at the correponding url)
 
 To send a daily mail you should edit your draft every morning without caring about repetitive work (copy the previous mail, update the subject, get the BDC, update the points).
 
