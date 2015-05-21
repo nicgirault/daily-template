@@ -21,7 +21,9 @@ Etat du sprint :
 
 Etat des services :
 Serious Game: IMG https://circleci.com/gh/theodo/bnp-serious-game-api.png?circle-token=32488dc32b1bfddaeebf053ddc4e6e69bc1fa522 IMG
+
 Backtest: IMG https://circleci.com/gh/theodo/bnp-backtest-api/tree/staging.png?circle-token=15707ac13b05c167becbfdcccedf7a71845796fb IMG
+
 Competition: IMG https://circleci.com/gh/theodo/bnp-competition-api.png?circle-token=c2367dc9a44f16834395435dec8da840c4c73079 IMG
 
 Nos objectifs de la journée:
