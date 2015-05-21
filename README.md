@@ -18,7 +18,7 @@ Usage
 3. Create a new sprint sheet (menu > add-on > daily scrum > new sprint)
 4. Fill the greenish cells
 5. Send daily mails:
-  - Write a template of your daily mail as a draft in your Gmail (an example of template with all dynamics fields is available in menu > add-on > daily scrum > daily mail). Don't forget to fill the recipient and the cc field.
+  - Write [a template](daily.md)  of your daily mail as a draft in your Gmail (an example of template with all dynamics fields is available in menu > add-on > daily scrum > daily mail). Don't forget to fill the recipient and the cc field.
   - Click on menu > add-on > daily scrum > daily mail and pick the corresponding draft in the list of drafts
   - Fill the number of points your PO has to validate
   - Preview the daily mail and send it!
