@@ -16,7 +16,9 @@ Etat du sprint :
 {bdc}
 
 {doneColorS}Done: {donePoints}/{totalPoints} points{doneColorE}
+
 {validationColorS}A valider: {toValidatePoints} points{validationColorE}
+
 {doneColorS}{earlyOrLate}: {toStandardPoints} points{doneColorE}
 
 Etat des services :
